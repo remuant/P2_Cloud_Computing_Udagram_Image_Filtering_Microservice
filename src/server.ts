@@ -48,11 +48,11 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       }
 
       // Check that the url exists
-      // The info at the folowng link helped guide this part of the implemetation:
+      // The info at the following link helped guide this part of the implemetation:
       // https://stackoverflow.com/questions/26007187/node-js-check-if-a-remote-url-exists
       const urlExist = require('url-exist');
       const exists = await urlExist(image_url);
-      // If url is valid...
+      // If the url is valid...
       if (exists){
         // Msg to console
         console.log('Valid URL');
