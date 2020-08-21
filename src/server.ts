@@ -27,15 +27,45 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
   /**************************************************************************** */
+  // app.get( "/filteredimage", async ( req, res ) => {
+  //     let { image_url } = req.query;
+  //
+  //     if (!image_url) {
+  //       return res.status(422).send({ message: 'Image URL is required!' });
+  //     }
+  //
+  //     let filteredPath = await filterImageFromURL(image_url);
+  //     res.status(200).sendFile(filteredPath, () => { deleteLocalFiles([filteredPath]); });
+  //   } );
+
   app.get( "/filteredimage", async ( req, res ) => {
+      // Extract the url
       let { image_url } = req.query;
 
+      // Check that a url was supplied
       if (!image_url) {
         return res.status(422).send({ message: 'Image URL is required!' });
       }
 
-      let filteredPath = await filterImageFromURL(image_url);
-      res.status(200).sendFile(filteredPath, () => { deleteLocalFiles([filteredPath]); });
+      // Check that the url exists
+      // The info at the folowng link helped guide this part of the implemetation:
+      // https://stackoverflow.com/questions/26007187/node-js-check-if-a-remote-url-exists
+      const urlExist = require('url-exist');
+      const exists = await urlExist(image_url);
+      // If url is valid...
+      if (exists){
+        // Msg to console
+        console.log('Valid URL');
+        // Filter and return the image
+        let filteredPath = await filterImageFromURL(image_url);
+        res.status(200).sendFile(filteredPath, () => { deleteLocalFiles([filteredPath]); });
+      }
+      else{
+        // Msg to console
+        console.log('ERROR: URL does not exist!!!!!!!!!!!!!');
+        // Handle 404 error
+        return res.status(404).send({ message: 'URL does not exist!!!!!!!!!!!!!' });
+      }
     } );
 
   // Root Endpoint
